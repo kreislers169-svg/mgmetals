@@ -1,0 +1,378 @@
+.admin-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+    margin: 40px 0;
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.02); /* Ļoti caurspīdīgs fons */
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
+    max-width: 450px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 15px 20px 15px 52px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.search-box i {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent);
+    font-size: 1.1rem;
+    pointer-events: none;
+    transition: 0.3s ease;
+}
+
+.filter-group {
+    display: flex;
+    gap: 10px;
+}
+
+.filter-btn {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 8px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: 0.3s;
+}
+
+.filter-btn.active, .filter-btn:hover {
+    background: var(--accent);
+    color: black;
+    border-color: var(--accent);
+}
+
+.search-box input:focus {
+    outline: none;
+    background: rgba(243, 156, 18, 0.05);
+    border-color: var(--accent);
+    box-shadow: 0 0 20px rgba(243, 156, 18, 0.15);
+}
+
+.search-box input:focus + i {
+    transform: translateY(-50%) scale(1.1);
+    filter: drop-shadow(0 0 5px var(--accent));
+}
+
+/* Filtru grupas pogas */
+.filter-group {
+    display: flex;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 6px;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    gap: 5px;
+}
+
+.filter-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    padding: 10px 22px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+}
+
+/* Aktīvās filtra pogas stils */
+.filter-btn.active {
+    background: var(--accent);
+    color: #000;
+    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+}
+
+.filter-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
+/* Responsivitāte mobilajiem */
+@media (max-width: 900px) {
+    .admin-controls {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 15px;
+    }
+    .search-box {
+        max-width: 100%;
+    }
+    .filter-group {
+        overflow-x: auto; /* Ļauj ritināt filtrus uz tel. */
+        justify-content: flex-start;
+    }
+}
+
+/* Pievieno šo beigās, lai pārliecinātos, ka stils tiek piemērots */
+.filter-group .filter-btn.active {
+    background: var(--accent) !important;
+    color: black !important;
+    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4) !important;
+}
+        :root {
+            --bg: #050506;
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: #f39c12;
+            --accent-glow: rgba(243, 156, 18, 0.2);
+            --text-main: #ffffff;
+            --text-dim: #88888e;
+        }
+
+        /* --- PAMATA STILI --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(243, 156, 18, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(243, 156, 18, 0.05) 0%, transparent 40%);
+            min-height: 100vh;
+        }
+
+        .blob {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: var(--accent);
+            filter: blur(150px);
+            opacity: 0.05;
+            z-index: -1;
+            border-radius: 50%;
+            animation: pulse 15s infinite alternate;
+        }
+        @keyframes pulse { from { transform: translate(0,0); } to { transform: translate(100px, 50px); } }
+
+        /* --- FLOATING BACK BUTTON --- */
+        .floating-back {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            z-index: 1000;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .floating-back i { color: var(--accent); font-size: 0.9rem; transition: 0.3s; }
+
+        .floating-back:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent);
+            transform: translateX(8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        /* --- LOGIN SCREEN --- */
+        .login-screen {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+        }
+
+        .login-glass {
+            background: rgba(10, 10, 12, 0.8);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border);
+            padding: 50px 40px;
+            border-radius: 35px;
+            width: 100%;
+            max-width: 340px;
+            text-align: center;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+            animation: cardEnter 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        @keyframes cardEnter {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-box { position: relative; margin-bottom: 15px; }
+
+        .input-box input {
+            width: 100%;
+            padding: 18px 20px 18px 55px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            color: white;
+            box-sizing: border-box;
+            transition: 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .input-box input:focus {
+            border-color: var(--accent);
+            background: rgba(255,255,255,0.06);
+            outline: none;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .input-box i {
+            position: absolute;
+            left: 22px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+        }
+
+        .btn-modern {
+            width: 100%;
+            padding: 18px;
+            background: var(--accent);
+            color: black;
+            border: none;
+            border-radius: 18px;
+            font-family: 'Oswald';
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 15px;
+        }
+
+        .btn-modern:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
+            box-shadow: 0 10px 25px var(--accent-glow);
+        }
+
+        /* --- DASHBOARD --- */
+        #dashboard { display: none; padding: 40px 5%; animation: fadeIn 0.8s ease; }
+
+        .nav-mini {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .status-tag { display: flex; align-items: center; gap: 10px; font-family: 'Oswald'; letter-spacing: 1px; }
+        
+        .status-dot {
+            width: 10px; height: 10px; background: #2ecc71; border-radius: 50%;
+            box-shadow: 0 0 10px #2ecc71; animation: blink 2s infinite;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 30px;
+            transition: 0.4s ease;
+            position: relative;
+        }
+
+        .glass-card:hover {
+            background: rgba(255,255,255,0.04);
+            border-color: rgba(243, 156, 18, 0.4);
+            transform: translateY(-8px);
+        }
+
+        .client-name { font-family: 'Oswald'; font-size: 1.5rem; margin: 0 0 5px 0; }
+        .client-date { color: var(--text-dim); font-size: 0.8rem; display: block; margin-bottom: 20px; }
+
+        .contact-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+        .contact-pill:hover { background: var(--accent); color: #000; }
+
+        .message-content { color: #ccc; line-height: 1.6; margin-bottom: 25px; font-size: 0.95rem; }
+
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .modern-select {
+            background: #111;
+            color: white;
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+        }
+
+        .delete-icon { color: #444; cursor: pointer; transition: 0.3s; }
+        .delete-icon:hover { color: #ff4757; transform: scale(1.2); }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 10px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: 0.3s;
+        }
+        .logout-btn:hover { border-color: #ff4757; color: #ff4757; }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Slēpjam sākuma pogu, kad esam iekšā panelī */
+        body.logged-in .floating-back { display: none; }

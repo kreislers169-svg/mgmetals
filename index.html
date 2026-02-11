@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MG Metāls | Meistarība Tēraudā</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* DROŠĪBAS STILS: Novērš elementu mirgošanu pirms animācijas */
+        .hero-badge, .hero-v2 h1, .hero-v2 p, .scroll-hint, .card {
+            opacity: 0;
+        }
+
+        /* Hero sadaļas centrēšana, lai panāktu "Par mums" lapas efektu */
+        .hero-v2 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 85vh; 
+            padding: 100px 20px 0;
+            position: relative;
+        }
+
+        .hero-v2 h1 {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            max-width: 900px;
+            margin-bottom: 25px;
+        }
+
+        .hero-v2 p {
+            font-size: 1.25rem;
+            max-width: 650px;
+            color: var(--text-dim);
+        }
+
+        /* Ritināšanas indikators */
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            opacity: 0.4;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .mouse-wheel {
+            width: 20px;
+            height: 35px;
+            border: 2px solid #fff;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            padding-top: 5px;
+        }
+
+        .mouse-wheel::before {
+            content: '';
+            width: 3px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 2px;
+            animation: scroll-move 2s infinite;
+        }
+
+        @keyframes scroll-move {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(15px); opacity: 0; }
+        }
+
+        .bento-grid-v2 {
+            padding-top: 100px; /* Nobīde no Hero sadaļas */
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">MG <span>METĀLS</span></div>
+        <nav>
+            <ul>
+                <li><a href="/index.html" class="active">Sākums</a></li>
+                <li><a href="/pakalpojumi.html">Pakalpojumi</a></li>
+                <li><a href="/par-mums.html">Par mums</a></li>
+                <li><a href="javascript:void(0)" id="ctaButton" onclick="openModal(event)" class="nav-cta">Saņemt piedāvājumu</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+
+        <section class="hero-v2">
+            <div class="hero-badge">Pieejami jaunākie projekti</div>
+            <h1>Mēs veidojam <span class="gradient-text">metāla nākotni</span></h1>
+            <p>MG Metāls apvieno viedo inženieriju ar tradicionālo meistarību, radot konstrukcijas, kas iedvesmo.</p>
+            
+            <div class="scroll-hint">
+                <span>Ritināt</span>
+                <div class="mouse-wheel"></div>
+            </div>
+        </section>
+
+        <section class="bento-grid-v2">
+            <div class="card card-tall">
+                <span>01</span>
+                <h3>Lielformāta metināšana</h3>
+                <p>Sarežģītu mezglu izstrāde ar milimetra precizitāti.</p>
+            </div>
+            <div class="card card-square">
+                <span>02</span>
+                <h3>CNC Tehnoloģijas</h3>
+            </div>
+            <div class="card card-square">
+                <span>03</span>
+                <h3>Lāzergriešana</h3>
+            </div>
+            <div class="card card-wide">
+                <span>04</span>
+                <h3>Individuālie pasūtījumi</h3>
+                <p>Ekskluzīvi dizaina elementi un prototipēšana.</p>
+            </div>
+        </section>
+
+        <div class="chat-container" id="chatContainer">
+            <div class="chat-window" id="chatWindow">
+                <div class="chat-header">
+                    <div class="wa-icon">💬</div>
+                    <div style="flex-grow: 1; margin-left: 10px;">
+                        <h4 style="margin: 0; font-family: 'Oswald', sans-serif;">MG Metāls Čats</h4>
+                        <small>Atbildēsim drīz!</small>
+                    </div>
+                    <button class="close-chat" onclick="toggleChat()" aria-label="Aizvērt">&times;</button>
+                </div>
+                <div class="chat-body">
+                    <p>Labdien! Kā varam palīdzēt ar jūsu metāla projektu?</p>
+                    <form id="liveChatForm">
+                        <input type="text" id="chatName" placeholder="Jūsu vārds" required>
+                        <textarea id="chatMessage" placeholder="Aprakstiet ideju..." required></textarea>
+                        <button type="submit" class="send-btn">Nosūtīt uz WhatsApp</button>
+                    </form>
+                </div>
+            </div>
+            <button class="chat-toggle-btn" onclick="toggleChat()">
+                <span class="icon">💬</span>
+                <span class="text">Jautāt speciālistam</span>
+            </button>
+        </div>
+    </main>
+
+    <div id="offerModal" class="modal">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeModal()">&times;</button>
+        <div class="modal-header">
+            <h2>SAŅEMT PIEDĀVĀJUMU</h2>
+        </div>
+        
+        <form id="offerForm" onsubmit="submitOffer(event)">
+            <div class="input-group">
+                <label><i class="fas fa-user"></i> Vārds, Uzvārds</label>
+                <input type="text" id="offerName" placeholder="Jūsu vārds" required>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fas fa-phone"></i> Tālruņa numurs</label>
+                <input type="tel" id="offerPhone" 
+                value="+371 " 
+                maxlength="13" 
+                 oninput="forcePrefix(this)" 
+                 required>
+             </div>
+
+            <div class="input-group">
+                <label><i class="fas fa-envelope"></i> E-pasta adrese</label>
+                <input type="email" id="offerEmail" placeholder="vards@piemers.lv" required>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fas fa-comment-dots"></i> Darba apraksts</label>
+                <textarea id="offerDesc" rows="4" placeholder="Aprakstiet savu vēlmi pēc iespējas precīzāk..." required></textarea>
+            </div>
+
+            <button type="submit" class="submit-offer-btn">NOSŪTĪT PIETEIKUMU</button>
+        </form>
+    </div>
+</div>
+
+    <footer class="modern-footer">
+        <div class="footer-grid">
+            <div class="footer-info">
+                <div class="logo">MG <span>METĀLS</span></div>
+                <p>Augstākās kvalitātes metālapstrāde un metināšanas pakalpojumi Kurzemē.</p>
+            </div>
+            <div class="footer-contacts">
+                <h3>Saziņa</h3>
+                <ul>
+                    <li><span class="icon">📧</span><a href="mailto:marisblums13@gmail.com">marisblums13@gmail.com</a></li>
+                    <li><span class="icon">📞</span><a href="tel:+37128774506">+371 28 774 506</a></li>
+                    <li><span class="icon">📍</span><span>Flotes iela 16, Liepāja</span></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h3>Navigācija</h3>
+                <ul>
+                    <li><a href="/">Sākums</a></li>
+                    <li><a href="/pakalpojumi">Pakalpojumi</a></li>
+                    <li><a href="/par-mums">Par mums</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 MG Metāls. Visas tiesības aizsargātas.</p>
+            <a href="admin.html" class="admin-access-link">Sistēmas piekļuve</a>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <script>
+        // 1. ScrollReveal Animācijas
+const sr = ScrollReveal({
+    origin: 'bottom',
+    distance: '60px',
+    duration: 1000,
+    delay: 200,
+    reset: false,
+    opacity: 0,
+    beforeReveal: function (el) {
+        el.style.opacity = "1";
+    }
+});
+
+sr.reveal('.hero-badge', { delay: 100 });
+sr.reveal('.hero-v2 h1', { delay: 300 });
+sr.reveal('.hero-v2 p', { delay: 500 });
+sr.reveal('.scroll-hint', { delay: 800 });
+sr.reveal('.card', { interval: 150, viewFactor: 0.3 }); 
+
+// 2. Modālo logu un čata funkcijas
+function openModal(e) {
+    if(e) e.preventDefault();
+    document.getElementById('offerModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    const modal = document.getElementById('offerModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Atbloķē lapas ritināšanu
+    }
+}
+
+function toggleChat() {
+    const chatWin = document.getElementById('chatWindow');
+    chatWin.style.display = (chatWin.style.display === 'block') ? 'none' : 'block';
+}
+
+function showSuccessPopup() {
+    const popup = document.getElementById('successPopup');
+    if (popup) {
+        popup.style.display = 'block';
+        popup.style.animation = 'popupIn 0.4s ease-out forwards';
+    }
+}
+
+function closeSuccessPopup() {
+    document.getElementById('successPopup').style.display = 'none';
+}
+
+// Aizvērt modālo logu uzklikšķinot ārpus tā
+window.onclick = function(event) {
+    const modal = document.getElementById('offerModal');
+    if (event.target == modal) closeModal();
+}
+
+// 3. Galvenā sūtīšanas funkcija
+async function submitOffer(event) {
+    event.preventDefault(); 
+
+    const phoneInput = document.getElementById('offerPhone');
+    const prefix = "+371 ";
+    const digitsOnly = phoneInput.value.substring(prefix.length).replace(/\D/g, '');
+
+    // PĀRBAUDE: Ja numurs ir par īsu, rādām mūsu jauno popup
+    if (digitsOnly.length < 8) {
+        showError("Telefona numuram jābūt tieši 8 cipariem!");
+        return; 
+    }
+
+    try {
+        const payload = {
+            vards: document.getElementById('offerName').value,
+            kontakti: `${phoneInput.value} | ${document.getElementById('offerEmail').value}`,
+            apraksts: document.getElementById('offerDesc').value,
+            datums: new Date().toLocaleDateString('lv-LV'),
+            statuss: 'Jauns'
+        };
+
+        const response = await fetch('save_pieteikums.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+            closeModal();
+            document.getElementById('offerForm').reset();
+            setTimeout(() => { phoneInput.value = "+371 "; }, 10);
+            showSuccessPopup();
+        } else {
+            showError("Servera kļūda. Mēģiniet vēlreiz vēlāk.");
+        }
+    } catch (error) {
+        showError("Neizdevās sazināties ar serveri. Pārbaudiet internetu!");
+    }
+}
+
+function showError(message) {
+    const errorPopup = document.getElementById('errorPopup');
+    const errorMessage = document.getElementById('errorMessage');
+    if (errorPopup && errorMessage) {
+        errorMessage.innerText = message;
+        errorPopup.style.display = 'block';
+        // Vienkārša fade-in animācija
+        errorPopup.style.opacity = '0';
+        setTimeout(() => { 
+            errorPopup.style.transition = "opacity 0.3s ease";
+            errorPopup.style.opacity = '1';
+        }, 10);
+    }
+}
+
+function closeErrorPopup() {
+    document.getElementById('errorPopup').style.display = 'none';
+    // Pēc aizvēršanas nofokusējam telefona lauku, ja tas bija pie vainas
+    const phoneInput = document.getElementById('offerPhone');
+    if (phoneInput.value.length < 13) {
+        phoneInput.focus();
+    }
+}
+
+function forcePrefix(input) {
+    const prefix = "+371 ";
+    // Neļauj izdzēst prefiksu
+    if (!input.value.startsWith(prefix)) {
+        input.value = prefix;
+    }
+    
+    // Iegūst tikai ciparus, kas seko pēc prefiksa
+    const digitsOnly = input.value.substring(prefix.length).replace(/\D/g, '');
+    
+    // Ierobežo līdz 8 cipariem un atjauno lauka vērtību
+    input.value = prefix + digitsOnly.substring(0, 8);
+}
+
+// 4. WhatsApp čata apstrāde
+document.getElementById('liveChatForm').onsubmit = function(e) {
+    e.preventDefault();
+    const vards = document.getElementById('chatName').value;
+    const zina = document.getElementById('chatMessage').value;
+    window.open(`https://wa.me/37128774506?text=${encodeURIComponent('Sveiki! Mans vārds ir ' + vards + '. ' + zina)}`, '_blank');
+    toggleChat();
+    this.reset();
+};
+    </script>
+
+    <div id="errorPopup" class="info-popup">
+    <div class="info-content">
+        <div class="info-icon">i</div>
+        <h3>INFORMĀCIJA</h3>
+        <p id="errorMessage">Lūdzu, pārbaudiet ievadītos datus.</p>
+        <button onclick="closeErrorPopup()" class="info-close-btn">SAPRATU</button>
+    </div>
+</div>
+</div>
+    
+    <div id="successPopup" class="success-popup">
+    <div class="success-content">
+        <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h3>Pieteikums Saņemts!</h3>
+        <p>Mēs ar jums sazināsimies tuvākajā laikā.</p>
+        <button onclick="closeSuccessPopup()" class="glass-btn" style="margin-top: 20px; padding: 10px 30px;">Labi</button>
+    </div>
+</div>
+</body>
+</html>

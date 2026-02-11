@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MG Metāls | Vadības Panelis</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="admin_style.css">
+</head>
+<body>
+
+    <div class="blob"></div>
+
+    <a href="index.html" class="floating-back">
+        <i class="fa-solid fa-arrow-left-long"></i>
+        <span>Sākumlapa</span>
+    </a>
+
+    <div id="loginSection" class="login-screen">
+        <div class="login-glass">
+            <h1 style="font-family: 'Oswald'; letter-spacing: 2px; margin-bottom: 35px;">MG PANELIS</h1>
+            
+            <div class="input-box">
+                <input type="text" id="u" placeholder="Lietotājvārds">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            
+            <div class="input-box">
+                <input type="password" id="p" placeholder="Piekļuves kods">
+                <i class="fas fa-lock"></i>
+            </div>
+            
+            <button onclick="login()" class="btn-modern">Autorizēties</button>
+        </div>
+    </div>
+
+    <main id="dashboard" style="display: none;">
+        <div class="nav-mini">
+            <div class="status-tag">
+                <span class="status-dot"></span>
+                <span>SISTĒMA AKTĪVA</span>
+            </div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <div id="stats" style="font-size: 0.8rem; color: var(--text-dim);"></div>
+                <a href="#" onclick="logout()" class="logout-btn">IZIET</a>
+            </div>
+        </div>
+
+        <div class="admin-controls">
+            <div class="search-box">
+                <input type="text" id="adminSearch" placeholder="Meklēt pēc vārda vai tālruņa..." oninput="renderLeads()">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            
+            <div class="filter-group">
+                <button class="filter-btn active" onclick="setFilter('Visi', this)">Visi</button>
+                <button class="filter-btn" onclick="setFilter('Jauns', this)">Jaunie</button>
+                <button class="filter-btn" onclick="setFilter('Procesā', this)">Procesā</button>
+                <button class="filter-btn" onclick="setFilter('Pabeigts', this)">Pabeigti</button>
+            </div>
+        </div>
+
+        <div class="dashboard-grid" id="leadsGrid">
+            </div>
+    </main>
+
+    <script>
+        let allLeads = []; // Globālais mainīgais datiem
+        let currentFilter = 'Visi';
+
+        // 1. Autorizācija
+        function login() {
+            const user = document.getElementById('u').value;
+            const pass = document.getElementById('p').value;
+            if(user === "admin" && pass === "metal123") {
+                localStorage.setItem('mg_core', 'active');
+                showDash();
+            } else {
+                alert("Nepareizi piekļuves dati!");
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('mg_core');
+            location.reload();
+        }
+
+        function showDash() {
+            document.body.classList.add('logged-in');
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            loadData();
+        }
+
+        // 2. Datu ielāde no JSON
+        async function loadData() {
+            try {
+                const res = await fetch('pieteikumi.json?v=' + Date.now());
+                allLeads = await res.json();
+                renderLeads();
+            } catch (err) { 
+                console.error("Kļūda ielādējot datus:", err); 
+            }
+        }
+
+        // 3. Filtru pārslēgšana
+        function setFilter(status, btn) {
+            currentFilter = status;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderLeads();
+        }
+
+        // 4. Galvenā funkcija, kas izvada kartītes (ar filtru un meklētāju)
+        function renderLeads() {
+            const grid = document.getElementById('leadsGrid');
+            const searchTerm = document.getElementById('adminSearch').value.toLowerCase();
+            grid.innerHTML = '';
+
+            // Filtrējam datus pēc statusa UN meklētāja burtu virknes
+            const filtered = allLeads.filter(item => {
+                const matchesStatus = (currentFilter === 'Visi') || (item.statuss === currentFilter);
+                const matchesSearch = (item.vards.toLowerCase().includes(searchTerm)) || 
+                                     (item.kontakti.toLowerCase().includes(searchTerm));
+                return matchesStatus && matchesSearch;
+            });
+
+            // Parādām statistiku
+            document.getElementById('stats').innerText = `Rādīti: ${filtered.length} no ${allLeads.length}`;
+
+            // Ģenerējam HTML (reversā secībā - jaunākie augšā)
+            [...filtered].reverse().forEach((item, i) => {
+                // Atrodam oriģinālo indeksu allLeads masīvā priekš update/delete
+                const originalIdx = allLeads.findIndex(l => l === item);
+                
+                grid.innerHTML += `
+                    <div class="glass-card">
+                        <h3 class="client-name">${item.vards}</h3>
+                        <span class="client-date">${item.datums || 'Nav norādīts'}</span>
+
+                        <a href="tel:${item.kontakti}" class="contact-pill">
+                            <i class="fas fa-phone"></i> ${item.kontakti}
+                        </a>
+
+                        <div class="message-content">${item.apraksts}</div>
+
+                        <div class="card-actions">
+                            <select class="modern-select" onchange="updateStatus(${originalIdx}, this.value)">
+                                <option value="Jauns" ${item.statuss === 'Jauns' ? 'selected' : ''}>🟡 JAUNS</option>
+                                <option value="Procesā" ${item.statuss === 'Procesā' ? 'selected' : ''}>🔵 PROCESĀ</option>
+                                <option value="Pabeigts" ${item.statuss === 'Pabeigts' ? 'selected' : ''}>🟢 PABEIGTS</option>
+                            </select>
+                            <div class="delete-icon" onclick="deleteEntry(${originalIdx})">
+                                <i class="fas fa-trash-can"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // 5. Darbības ar PHP
+        async function updateStatus(id, stat) {
+            await fetch('manage_pieteikumi.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ action: 'update', id, status: stat })
+            });
+            loadData();
+        }
+
+        async function deleteEntry(id) {
+            if(!confirm("Vai tiešām vēlaties dzēst?")) return;
+            await fetch('manage_pieteikumi.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ action: 'delete', id })
+            });
+            loadData();
+        }
+
+        // Pārbaude, vai sesija ir aktīva
+        if(localStorage.getItem('mg_core') === 'active') showDash();
+    </script>
+</body>
+</html>
