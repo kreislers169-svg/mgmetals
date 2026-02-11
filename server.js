@@ -4,9 +4,16 @@ const nodemailer = require('nodemailer');
 const app = express();
 const PORT = 3000;
 
-app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
+// Ja faili ir turpat, kur server.js, izmanto šo:
+app.use(express.static(__dirname)); 
+
+// Vai arī vietā, kur tu sūti index.html:
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 
 // E-pasta sūtītāja iestatījumi
@@ -19,9 +26,16 @@ const transporter = nodemailer.createTransport({
 });
 
 // Lapu maršruti
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
-app.get('/par-mums', (req, res) => res.sendFile(path.join(__dirname, 'public', 'par-mums.html')));
-app.get('/pakalpojumi', (req, res) => res.sendFile(path.join(__dirname, 'public', 'pakalpojumi.html')));
+//app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+//app.get('/par-mums', (req, res) => res.sendFile(path.join(__dirname, 'public', 'par-mums.html')));
+//app.get('/pakalpojumi', (req, res) => res.sendFile(path.join(__dirname, 'public', 'pakalpojumi.html')));
+
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+app.get('/par-mums', (req, res) => res.sendFile(path.join(__dirname, 'par-mums.html')));
+app.get('/pakalpojumi', (req, res) => res.sendFile(path.join(__dirname, 'pakalpojumi.html')));
+
+// Un neaizmirsti par statiskajiem failiem (CSS, bildes):
+app.use(express.static(__dirname));
 
 // API kontaktu formai (E-pastam)
 const fs = require('fs'); // Pievieno šo augšā pie pārējiem require
@@ -65,4 +79,5 @@ app.use((req, res) => {
 
 app.listen(PORT, () => {
     console.log(`🚀 Serveris griežas uz http://localhost:${PORT}`);
+
 });
